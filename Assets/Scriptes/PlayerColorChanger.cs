@@ -25,7 +25,7 @@ public class PlayerColorChanger : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4)) // Press "4"
         {
-            sr.color = Color.yellow;
+            sr.color = new Color(1f, 1f, 0f, 1f);
         }
     }
 }
