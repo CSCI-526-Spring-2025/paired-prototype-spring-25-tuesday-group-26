@@ -7,9 +7,14 @@ public class CountdownTimer : MonoBehaviour
 {
     public float countdownTime = 60f;
     public Text countdownText;
+    public GameObject timeUpBanner;
 
     private void Start()
     {
+        if (timeUpBanner != null)
+        {
+            timeUpBanner.SetActive(false);
+        }
         StartCoroutine(StartCountdown());
     }
 
@@ -30,5 +35,17 @@ public class CountdownTimer : MonoBehaviour
             currentTime--;
         }
         countdownText.text = "00:00:00";
+
+        Time.timeScale = 0f;
+
+        if (timeUpBanner != null)
+        {
+            timeUpBanner.SetActive(true);
+            Text bannerText = timeUpBanner.GetComponentInChildren<Text>();
+            if (bannerText != null)
+            {
+                bannerText.text = "Time is up, you failed";
+            }
+        }
     }
 }

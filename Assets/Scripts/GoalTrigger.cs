@@ -21,7 +21,14 @@ public class GoalTrigger : MonoBehaviour
             Debug.Log("You Win!");
             
             if (winText != null)
+            {
                 winText.SetActive(true);
+                Text bannerText = winText.GetComponentInChildren<Text>();
+                if (bannerText != null)
+                {
+                    bannerText.text = "You Win!";
+                }
+            }
             
             Invoke("RestartGame", 2f);
         }
