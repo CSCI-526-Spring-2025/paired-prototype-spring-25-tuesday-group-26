@@ -1,28 +1,42 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement; // For restarting on Game Over
-using System.Collections; // Required for Coroutine
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PlayerStamina : MonoBehaviour
 {
-    public Slider staminaBar; // Assign in Inspector
-    public float maxStamina = 100f;
-    private float currentStamina;
-    public float knockbackForce = 5f; // Jerk effect intensity
+    public int maxHits = 5;
+    private int currentHits = 0;
+    public float knockbackForce = 5f;
     private Rigidbody2D rb;
+
+    public GameObject[] healthLabels;
+
+    public GameObject gameOverBanner;
 
     void Start()
     {
-        currentStamina = maxStamina;
-        rb = GetComponent<Rigidbody2D>(); // Get Rigidbody for applying knockback
-        UpdateStaminaBar();
+        rb = GetComponent<Rigidbody2D>();
+
+        if (healthLabels != null)
+        {
+            foreach (GameObject label in healthLabels)
+            {
+                label.SetActive(true);
+            }
+        }
+
+        if (gameOverBanner != null)
+        {
+            gameOverBanner.SetActive(false);
+        }
     }
 
-    void OnCollisionEnter2D(Collision2D collision) // Detects collision with enemies
+    void OnCollisionEnter2D(Collision2D collision)
     {
         Debug.Log("Collision Detected with: " + collision.gameObject.name);
 
-        if (collision.gameObject.CompareTag("Enemy")) // Ensure it's an enemy
+        if (collision.gameObject.CompareTag("enemy"))
         {
             Debug.Log("Collided with Enemy!");
 
@@ -31,53 +45,57 @@ public class PlayerStamina : MonoBehaviour
 
             if (enemySprite != null && playerSprite != null)
             {
-                if (!CompareColors(playerSprite.color, enemySprite.color)) // If colors are different
+                if (!CompareColors(playerSprite.color, enemySprite.color))
                 {
-                    Debug.Log("Colors are different! Reducing Stamina & Applying Knockback");
-                    TakeDamage(20f); // Reduce stamina by 20
+                    Debug.Log("Colors are different! Reducing Health & Applying Knockback");
+                    TakeDamage();
                     StartCoroutine(ApplyKnockback(collision.gameObject.transform.position));
                 }
                 else
                 {
-                    Debug.Log("Colors Match! No Stamina Reduction.");
+                    Debug.Log("Colors Match! No Damage Taken.");
                 }
             }
         }
     }
 
-    void TakeDamage(float damage)
+    void TakeDamage()
     {
-        currentStamina -= damage;
-        UpdateStaminaBar();
+        currentHits++;
 
-        if (currentStamina <= 0)
+        if (healthLabels != null && currentHits - 1 < healthLabels.Length)
+        {
+            healthLabels[currentHits - 1].SetActive(false);
+        }
+
+        if (currentHits >= maxHits)
         {
             GameOver();
         }
     }
 
-    void UpdateStaminaBar()
-    {
-        if (staminaBar != null)
-        {
-            staminaBar.value = currentStamina / maxStamina;
-        }
-    }
-
     IEnumerator ApplyKnockback(Vector3 enemyPosition)
     {
-        Vector2 knockbackDirection = (transform.position - enemyPosition).normalized; // Move away from enemy
+        Vector2 knockbackDirection = (transform.position - enemyPosition).normalized;
         rb.velocity = knockbackDirection * knockbackForce;
-
-        yield return new WaitForSeconds(0.2f); // Stop movement briefly
-
-        rb.velocity = Vector2.zero; // Reset velocity after knockback
+        yield return new WaitForSeconds(0.2f);
+        rb.velocity = Vector2.zero;
     }
 
     void GameOver()
     {
         Debug.Log("Game Over!");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Restart game
+        Time.timeScale = 0f;
+
+        if (gameOverBanner != null)
+        {
+            gameOverBanner.SetActive(true);
+            Text bannerText = gameOverBanner.GetComponentInChildren<Text>();
+            if (bannerText != null)
+            {
+                bannerText.text = "Game Over, You Failed";
+            }
+        }
     }
 
     bool CompareColors(Color c1, Color c2)
