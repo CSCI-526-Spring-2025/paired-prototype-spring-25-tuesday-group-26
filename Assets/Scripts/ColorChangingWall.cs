@@ -34,11 +34,9 @@ public class ChangeColorOnPass : MonoBehaviour
         }
     }
 
-    bool ColorsAreSimilar(Color c1, Color c2, float threshold = 0.1f)
+    bool ColorsAreSimilar(Color c1, Color c2)
     {
-        return Mathf.Abs(c1.r - c2.r) < threshold &&
-               Mathf.Abs(c1.g - c2.g) < threshold &&
-               Mathf.Abs(c1.b - c2.b) < threshold;
+        return c1 == c2;
     }
 }
 

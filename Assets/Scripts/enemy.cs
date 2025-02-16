@@ -1,10 +1,25 @@
 using UnityEngine;
+using TMPro;  
 
 public class Enemy : MonoBehaviour
 {
     public static int enemyKillCount = 0;
-    public static UnityEngine.UI.Text enemyKillCountText; // UI text reference
-    public GameObject vanishEffectPrefab; // Assign in Inspector
+    public static TMP_Text enemyKillCountText; 
+
+    public GameObject vanishEffectPrefab;
+
+    void Start()
+    {
+        
+        if (enemyKillCountText == null)
+        {
+            enemyKillCountText = GameObject.Find("EnemyKillCountText")?.GetComponent<TMP_Text>();
+            if (enemyKillCountText == null)
+            {
+                Debug.LogWarning("ui not found!");
+            }
+        }
+    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -14,36 +29,29 @@ public class Enemy : MonoBehaviour
 
             if (playerSprite != null && CompareColors(playerSprite.color, GetComponent<SpriteRenderer>().color))
             {
-                enemyKillCount++; // Increase kill count
+                enemyKillCount++; 
                 if (enemyKillCountText != null)
-                    enemyKillCountText.text = "Enemies Killed: " + enemyKillCount;
+                    enemyKillCountText.text = "Enemies Killed: " + enemyKillCount; 
 
-                VanishEffect(); // Play Particle Effect
-                Destroy(gameObject); // Remove enemy
+                VanishEffect();
+                Destroy(gameObject); 
             }
         }
     }
 
     void VanishEffect()
-{
-    if (vanishEffectPrefab != null)
     {
-        GameObject effect = Instantiate(vanishEffectPrefab, transform.position, Quaternion.identity);
-        Debug.Log("Particle Effect Spawned at: " + transform.position);
-
-        ParticleSystem ps = effect.GetComponent<ParticleSystem>();
-        if (ps != null)
+        if (vanishEffectPrefab != null)
         {
-            ps.Play();
-            Destroy(effect, ps.main.duration); // Destroy after effect duration
+            GameObject effect = Instantiate(vanishEffectPrefab, transform.position, Quaternion.identity);
+            ParticleSystem ps = effect.GetComponent<ParticleSystem>();
+            if (ps != null)
+            {
+                ps.Play();
+                Destroy(effect, ps.main.duration);
+            }
         }
     }
-    else
-    {
-        Debug.LogWarning("VanishEffectPrefab is NOT assigned!");
-    }
-}
-
 
     bool CompareColors(Color c1, Color c2)
     {
@@ -52,3 +60,4 @@ public class Enemy : MonoBehaviour
                Mathf.Approximately(c1.b, c2.b);
     }
 }
+
