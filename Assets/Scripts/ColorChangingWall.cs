@@ -6,18 +6,39 @@ public class ChangeColorOnPass : MonoBehaviour
 
     void Start()
     {
-        playerRenderer = GetComponent<SpriteRenderer>(); // Get the player's sprite
+        playerRenderer = GetComponent<SpriteRenderer>(); 
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        if (other.CompareTag("colored")) // Check if it's a passable wall
+        if (collision.gameObject.CompareTag("Wall"))
         {
-            SpriteRenderer wallRenderer = other.GetComponent<SpriteRenderer>(); // Get wall's color
+            SpriteRenderer wallRenderer = collision.gameObject.GetComponent<SpriteRenderer>();
             if (wallRenderer != null)
             {
-                playerRenderer.color = wallRenderer.color; // Change player color to wall color
+                bool isSameColor = ColorsAreSimilar(playerRenderer.color, wallRenderer.color);
+
+                if (isSameColor)
+                {
+                    collision.gameObject.GetComponent<BoxCollider2D>().isTrigger = true;
+                }
             }
         }
     }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Wall"))
+        {
+            other.isTrigger = false;
+        }
+    }
+
+    bool ColorsAreSimilar(Color c1, Color c2, float threshold = 0.1f)
+    {
+        return Mathf.Abs(c1.r - c2.r) < threshold &&
+               Mathf.Abs(c1.g - c2.g) < threshold &&
+               Mathf.Abs(c1.b - c2.b) < threshold;
+    }
 }
+
