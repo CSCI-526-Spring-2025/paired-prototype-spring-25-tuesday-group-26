@@ -11,7 +11,7 @@ public class ChangeColorOnPass : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("colored"))
         {
             SpriteRenderer wallRenderer = collision.gameObject.GetComponent<SpriteRenderer>();
             if (wallRenderer != null)
