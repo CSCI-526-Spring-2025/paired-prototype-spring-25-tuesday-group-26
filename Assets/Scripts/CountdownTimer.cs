@@ -8,6 +8,7 @@ public class CountdownTimer : MonoBehaviour
     public float countdownTime = 60f;
     public Text countdownText;
     public GameObject timeUpBanner;
+    public GameObject replayButton;
 
     private void Start()
     {
@@ -45,6 +46,12 @@ public class CountdownTimer : MonoBehaviour
             if (bannerText != null)
             {
                 bannerText.text = "Time is up, you failed";
+            }
+            Time.timeScale = 0f;
+
+            if (replayButton != null)
+            {
+                replayButton.SetActive(true);
             }
         }
     }

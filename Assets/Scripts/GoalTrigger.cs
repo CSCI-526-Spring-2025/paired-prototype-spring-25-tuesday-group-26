@@ -6,6 +6,7 @@ public class GoalTrigger : MonoBehaviour
 {
     public GameObject winText;
     private bool gameEnded = false;
+    public GameObject replayButton;
 
     void Start()
     {
@@ -29,13 +30,24 @@ public class GoalTrigger : MonoBehaviour
                     bannerText.text = "You Win!";
                 }
             }
-            
-            Invoke("RestartGame", 2f);
+            Time.timeScale = 0f;
+
+            if (replayButton != null)
+            {
+                replayButton.SetActive(true);
+            }
         }
     }
 
-    void RestartGame()
+    public void RestartGame()
     {
+        Time.timeScale = 1f;
+        Enemy.enemyKillCount = 0;  
+        if (Enemy.enemyKillCountText != null)
+        {
+            Enemy.enemyKillCountText.text = "Enemies Killed: 0";  
+        }
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

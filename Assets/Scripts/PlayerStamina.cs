@@ -9,6 +9,7 @@ public class PlayerStamina : MonoBehaviour
     private int currentHits = 0;
     public float knockbackForce = 5f;
     private Rigidbody2D rb;
+    public GameObject replayButton;
 
     public GameObject[] healthLabels;
 
@@ -94,6 +95,12 @@ public class PlayerStamina : MonoBehaviour
             if (bannerText != null)
             {
                 bannerText.text = "Game Over, You Failed";
+            }
+            Time.timeScale = 0f;
+
+            if (replayButton != null)
+            {
+                replayButton.SetActive(true);
             }
         }
     }

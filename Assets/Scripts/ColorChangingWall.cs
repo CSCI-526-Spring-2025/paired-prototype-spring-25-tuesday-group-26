@@ -28,7 +28,7 @@ public class ChangeColorOnPass : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Wall"))
+        if (other.CompareTag("colored"))
         {
             other.isTrigger = false;
         }
